@@ -86,7 +86,7 @@ def sortByLabel():
         for direc in directories:
             for label in labels:
                 # if label[1] in direc:
-                if re.search(r"\b"+label[1]+r"[\d]*[a-zA-Z]*\b", direc) != None:
+                if re.search(r"\b"+label[1]+r"[\d]*[a-zA-Z\d]*\b", direc) != None:
                     if label[1] in labelsProcessed.keys():
                         labelsProcessed[label[1]][1].append(direc)
                         notToDeleteItems.add(direc)
@@ -121,9 +121,9 @@ def formatter(opType):
             print(f"{bcolors.OKBLUE}{bcolors.BOLD}{bcolors.UNDERLINE}---------------------------------"
                   + "Label: " + songList[0] + f"---------------------------------{bcolors.ENDC}")
             for song in songList[1]:
-                if re.search(r"\b"+list(labelsProcessed.keys())[list(labelsProcessed.values()).index(songList)]+r"[\d]*[a-zA-Z]*\b", song) != None:
+                if re.search(r"\b"+list(labelsProcessed.keys())[list(labelsProcessed.values()).index(songList)]+r"[\d]*[a-zA-Z\d]*\b", song) != None:
                     match = re.search(
-                        r"(.*)(\b" + list(labelsProcessed.keys())[list(labelsProcessed.values()).index(songList)] + r"[\d]*[a-zA-Z]*\b)(.*)", song)
+                        r"(.*)(\b" + list(labelsProcessed.keys())[list(labelsProcessed.values()).index(songList)] + r"[\d]*[a-zA-Z\d]*\b)(.*)", song)
                     print(f"{bcolors.OKGREEN}" + match[1] + f"{bcolors.ENDC}" + f"{bcolors.UNDERLINE}{bcolors.RED}" +
                           match[2] + f"{bcolors.ENDC}" + f"{bcolors.OKGREEN}" + match[3] + f"{bcolors.ENDC}")
             print("\n")
