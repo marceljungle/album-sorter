@@ -12,6 +12,7 @@ from flask import request
 from shutil import copy
 import threading
 import time
+import colorama
 
 labels = list()
 artists = list()
@@ -33,6 +34,7 @@ class bcolors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     RED = '\33[91m'
+    RED1 = "\033[0;31m"
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
@@ -186,6 +188,7 @@ def cleaner(directoryFile):
 
 
 def run():
+    colorama.init()
     global createdDirectories
     global directories
     global artistProcessed
