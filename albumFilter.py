@@ -14,17 +14,40 @@ import threading
 import time
 import colorama
 
+# will store labels names
 labels = list()
+# will store artists names
 artists = list()
+# stores albums that containts the albumsFolder
 directories = list()
+# stores the albumsFolders
 createdDirectories = set()
+# contains the directory which contains the root dir, see readme structure
 rootDirectory = str()
+# stores label info:
+# - the keys are the label catalog naming
+# - in the values case, it's a list of two types, one is the label name and a list
+#   which contains all songs with that particular label
+# labelsProcesed[keys=label catalog namings]= [labelName, [songs of that label]]
 labelsProcessed = dict()
+# stores artist info:
+# - the keys are the artist names
+# - values are the songs asociated to that artist
+# artistProcessed[artists] = [songs asociated to that artist]
 artistProcessed = dict()
+# albums that we filtered out because of the label or the artist name and we cant delete
+# album
 notToDeleteItems = set()
+# same as before but with the entire route
+# C:\x\y\album
 toKeepAlbums = list()
+# stores album images route
+# C:\x\y\album\cover.jpg|png|jpeg etc.
 images = dict()
+# to control server execution
 runServerOrNot = True
+
+# for output color the results
 
 
 class bcolors:
@@ -43,6 +66,7 @@ class bcolors:
     YELLOW = '\033[34m'
 
 
+# just imports and parse labels from the text file
 def importLabels():
     if os.path.exists("labels.txt"):
         with open("labels.txt", "r") as labelsImport:
@@ -58,6 +82,7 @@ def importLabels():
                          "#**Example: Armada Deep,ARDP")
 
 
+# just imports and parse artists from the text file
 def importArtists():
     if os.path.exists("artists.txt"):
         with open("artists.txt", "r") as artistImport:
@@ -77,6 +102,8 @@ def importArtists():
         with open("artists.txt", "w") as create:
             create.write("#**Write here the artists, one in each line")
 
+# will fill createdDirectories which contains albumsFolders in the root directory check readme structure
+
 
 def listDirectoriesInside():
     with open("sortFolders.txt", "r") as file:
@@ -87,6 +114,8 @@ def listDirectoriesInside():
             createdDirectories.add(pathAndFile)
     file.close()
 
+# will list the albums containted in each albumsFolder, as we will see after
+
 
 def listDirectories(arg):
     arr = ""
@@ -95,6 +124,7 @@ def listDirectories(arg):
     return arr
 
 
+# just apply a regex of label related keywords to each album name and we save albums with a match in notToDeleteItems, which we saw earlier
 def sortByLabel(file):
     if os.path.exists("labels.txt") and labels != []:
         for direc in directories:
@@ -112,6 +142,7 @@ def sortByLabel(file):
     formatter("label", file)
 
 
+# same as before but this time with the artist regex, we also save matching albums in notToDeleteItems
 def sortByArtist(file):
     if os.path.exists("artists.txt") and artists != []:
         for direc in directories:
@@ -129,6 +160,10 @@ def sortByArtist(file):
     formatter("artist", file)
 
 
+# here we make the output that it is shown in the terminal, it is called from both functions that we have seen earlier
+# depending of what functions called this, we will print different albums (label related or artist related)
+# we also save images dirs into images global variable, and we pass it to runServer.
+# as we enter here 2 times for each albumFolder, we want to run the server only once, so that's why we use runServerOrNot
 def formatter(opType, file):
     global runServerOrNot
     global images
@@ -170,6 +205,8 @@ def formatter(opType, file):
     runServerOrNot = False
 
 
+# if user choose to delete all not matched albums, this functions does that
+# depending of the os will run a command or another
 def cleaner(directoryFile):
     for file in directories:
         if(file not in notToDeleteItems):
@@ -185,6 +222,8 @@ def cleaner(directoryFile):
                     os.system('rmdir /s /q "' + fPlusDirectory + '"')
                 except:
                     pass
+
+# this will use all functios that wae saw before, and will iterate albumsFolders which are contained in the rootDir
 
 
 def run():
@@ -215,7 +254,7 @@ def run():
         except Exception as e:
             print("This directory doesn't exist! (" + file + ")" + str(e))
 
-    # let's clean imported images
+    # let's clean imported images located in static
     for image in images.values():
         if os.name != "nt":
             try:
@@ -231,6 +270,8 @@ def run():
                               os.path.basename(image[0]) + '"')
             except:
                 pass
+
+# this funcion will get entire dir of the images
 
 
 def getMeta(directoryFile):
@@ -254,6 +295,8 @@ def getMeta(directoryFile):
         except Exception as e:
             pass
 
+# will copy the images from the album to static folder
+
 
 def copyImages():
     for key, value in images.items():
@@ -263,12 +306,16 @@ def copyImages():
         except Exception as e:
             pass
 
+# not used for now
+
 
 def shutdown_server():
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
+
+# runs the server,  with actual variables
 
 
 def runServer(dicti):
