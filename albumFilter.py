@@ -214,7 +214,7 @@ def cleaner(directoryFile):
                 directoryFile, file).replace("\n", "")
             if os.name != "nt":
                 try:
-                    os.system("sudo rm -r " + "'" + fPlusDirectory + "'")
+                    os.system("rm -r " + "'" + fPlusDirectory + "'")
                 except:
                     pass
             else:
@@ -259,7 +259,7 @@ def run():
         if os.name != "nt":
             try:
                 if image[0] != "":
-                    os.system("sudo rm " + "'static/" +
+                    os.system("rm " + "'static/" +
                               os.path.basename(image[0]) + "'")
             except:
                 pass
