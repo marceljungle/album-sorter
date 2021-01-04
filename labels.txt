@@ -29,3 +29,4 @@ Selected,SELECTED
 Soave,LAB
 Zerothree,ZT
 Be Yourself Music,BYMD
+Revealed Radar,REVRD

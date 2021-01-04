@@ -90,7 +90,8 @@ def importArtists():
                 if "#**" not in artist:
                     artist = artist.strip()
                     if " " not in artist:
-                        artistFirstLetterUpper = artist[0].upper() + artist[1:]
+                        artistFirstLetterUpper = artist.title()  # in case of more than one word
+                        #artistFirstLetterUpper = artist[0].upper() + artist[1:]
                     else:
                         parsed = artist.split(" ")
                         for artt in parsed:
@@ -147,7 +148,7 @@ def sortByArtist(file):
     if os.path.exists("artists.txt") and artists != []:
         for direc in directories:
             for artist in artists:
-                if artist in direc:
+                if artist.lower() in direc.replace("-", " ").replace("_", " ").replace(".", " ").lower():
                     if artist in artistProcessed.keys():
                         artistProcessed[artist].append(direc)
                         notToDeleteItems.add(direc)
@@ -179,7 +180,7 @@ def formatter(opType, file):
                     print(f"{bcolors.OKGREEN}" + match[1] + f"{bcolors.ENDC}" + f"{bcolors.UNDERLINE}{bcolors.RED}" +
                           match[2] + f"{bcolors.ENDC}" + f"{bcolors.OKGREEN}" + match[3] + f"{bcolors.ENDC}")
                 """ to get label name for server """
-                #global images
+                # global images
                 if song in images.keys():
                     images[song].append(songList[0])
             print("\n")
@@ -188,11 +189,14 @@ def formatter(opType, file):
             print(f"{bcolors.OKBLUE}{bcolors.BOLD}{bcolors.UNDERLINE}---------------------------------"
                   + "Artist: " + artist[0].upper() + artist[1:] + f"---------------------------------{bcolors.ENDC}")
             for song in songList:
-                if re.search(r"(.*)(" + artist.replace(" ", ".") + ")(.*)", song) != None:
+                if re.search(r"(.*)(" + artist.replace(" ", ".").lower() + ")(.*)", song.lower()) != None:
                     match = re.search(
-                        r"(.*)(" + artist.replace(" ", ".") + ")(.*)", song)
+                        r"(.*)(" + artist.replace(" ", ".").lower() + ")(.*)", song.lower())
                     print(f"{bcolors.OKGREEN}" + match[1] + f"{bcolors.ENDC}" + f"{bcolors.UNDERLINE}{bcolors.RED}" +
                           match[2] + f"{bcolors.ENDC}" + f"{bcolors.OKGREEN}" + match[3] + f"{bcolors.ENDC}")
+                else:
+                    print(song)
+                    print("(.*)(" + artist.replace(" ", ".").lower() + ")(.*)")
                 """ to get label name for server """
                 if song in images.keys():
                     images[song].append(songList[0])
@@ -370,7 +374,7 @@ def runServer(dicti):
         }
 
         .tbl-content {
-            height: 50em;
+            height: 75em;
             overflow-x: auto;
             margin-top: 0px;
             border: 1px solid rgba(255, 255, 255, 0.3);
